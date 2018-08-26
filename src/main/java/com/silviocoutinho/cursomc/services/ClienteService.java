@@ -2,7 +2,7 @@ package com.silviocoutinho.cursomc.services;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.silviocoutinho.cursomc.domain.Cidade;
 import com.silviocoutinho.cursomc.domain.Cliente;
@@ -59,7 +60,7 @@ public class ClienteService {
 			repo.delete(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new com.silviocoutinho.cursomc.services.exceptions.DataIntegrityViolationException(
-					"Não é possível excluir um cliente ainda");
+					"Não é possível excluir um cliente porque há pedidos relacionados");
 
 		}
 
