@@ -1,5 +1,6 @@
 package com.silviocoutinho.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,25 +15,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.silviocoutinho.cursomc.domain.Cliente;
 import com.silviocoutinho.cursomc.dto.ClienteDTO;
+import com.silviocoutinho.cursomc.dto.ClienteNewDTO;
 import com.silviocoutinho.cursomc.services.ClienteService;
 
 @RestController
-@RequestMapping(value="/clientes") //criacao do endpoint clientes
+@RequestMapping(value = "/clientes") // criacao do endpoint clientes
 public class ClienteResource {
-	
+
 	@Autowired
 	private ClienteService service;
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET)//usando o verbo GET
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET) // usando o verbo GET
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
-			Cliente obj = service.find(id);			
-			return ResponseEntity.ok().body(obj);
+		Cliente obj = service.find(id);
+		return ResponseEntity.ok().body(obj);
 
 	}
-	
+
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDTO) {
+		Cliente obj = service.fromDTO(objDTO);
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+
+	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO objDTO, @PathVariable Integer id) {
 		Cliente obj = service.fromDTO(objDTO);
@@ -58,16 +70,14 @@ public class ClienteResource {
 	}
 
 	@RequestMapping(value = "/page", method = RequestMethod.GET) // usando o verbo GET
-	public ResponseEntity<Page<ClienteDTO>> findPage(
-			@RequestParam(value="page", defaultValue="0") Integer page, 
-			@RequestParam(value="linesPerPage", defaultValue="24") Integer linesPerPage, 
-			@RequestParam(value="orderBy", defaultValue="nome")String orderBy, 
-			@RequestParam(value="direction", defaultValue="ASC") String direction) {
+	public ResponseEntity<Page<ClienteDTO>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+			@RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
 		Page<Cliente> list = service.findPage(page, linesPerPage, orderBy, direction);
 		Page<ClienteDTO> listDTO = list.map(obj -> new ClienteDTO(obj));
 		return ResponseEntity.ok().body(listDTO);
 
 	}
-
 
 }
