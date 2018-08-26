@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.silviocoutinho.cursomc.domain.Categoria;
+import com.silviocoutinho.cursomc.domain.Cliente;
 import com.silviocoutinho.cursomc.dto.CategoriaDTO;
 import com.silviocoutinho.cursomc.repositories.CategoriaRepository;
 import com.silviocoutinho.cursomc.services.exceptions.ObjectNotFoundException;
@@ -30,8 +31,14 @@ public class CategoriaService {
 	}
 
 	public Categoria insert(Categoria obj) {
-		obj.setId(null);
-		return repo.save(obj);
+		Categoria newObj = find(obj.getId());
+		updateData(newObj, obj);
+		return repo.save(newObj);
+	}
+
+	private void updateData(Categoria newObj, Categoria obj) {
+		newObj.setNome(obj.getNome());
+		
 	}
 
 	public Categoria update(Categoria obj) {
