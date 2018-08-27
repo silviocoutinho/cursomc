@@ -5,34 +5,32 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.silviocoutinho.cursomc.domain.Cliente;
+import com.silviocoutinho.cursomc.services.validation.ClienteUpdate;
 
+@ClienteUpdate
 public class ClienteDTO {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
-	
-	@NotEmpty(message="Preenchimento obrigatório")
-	@Length(min=5, max=120, message=") tamnho deve ser entre 5 e 120 caracteres")
+
+	@NotEmpty(message = "Preenchimento obrigatório")
+	@Length(min = 5, max = 120, message = ") tamnho deve ser entre 5 e 120 caracteres")
 	private String nome;
-	
-	@NotEmpty(message="Preenchimento obrigatório")
-	@Email(message="E-mail inválido")
+
+	@NotEmpty(message = "Preenchimento obrigatório")
+	@Email(message = "E-mail inválido")
 	private String email;
-	
+
 	public ClienteDTO() {
-		
+
 	}
-	
-	
 
 	public ClienteDTO(Cliente obj) {
-		
+
 		this.id = obj.getId();
 		this.nome = obj.getNome();
 		this.email = obj.getEmail();
 	}
-
-
 
 	public Integer getId() {
 		return id;
@@ -57,8 +55,5 @@ public class ClienteDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
-
 
 }
